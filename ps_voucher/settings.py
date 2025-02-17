@@ -85,11 +85,11 @@ WSGI_APPLICATION = 'ps_voucher.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'voucher-backup',
+        'NAME': 'railway',
         'USER': 'postgres',
-        'PASSWORD': 'Euro@1998!',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'PASSWORD': 'rrtBHXaiqJjaifySbWWbnezrFxMnSbFM',
+        'HOST': 'junction.proxy.rlwy.net',
+        'PORT': '50215',
     }
 }
 
