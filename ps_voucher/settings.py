@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-v=tzrc4w@qgac6h@2bljc93tmh65ueubtim5qy2j4r4b+eb#jj
 DEBUG = True
 SERVE_MEDIA_IN_PROD = True
 
-ALLOWED_HOSTS = ['parada-segura.up.railway.app', '*']
-CSRF_TRUSTED_ORIGINS = ['https://parada-segura.up.railway.app']
+ALLOWED_HOSTS = ['gsparadasegura.com.br', '*']
+CSRF_TRUSTED_ORIGINS = ['https://gsparadasegura.com.br']
 
 CORS_ALLOW_ALL_ORIGINS = True
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
