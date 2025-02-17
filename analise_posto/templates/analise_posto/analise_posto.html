@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Análise do Posto{% endblock %}
+
+{% block content %}
+<style>
+/* Estilos Gerais */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    color: #444;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.card {
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+h2, h3 {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+    margin: 20px 0;
+}
+
+/* Botões e Inputs */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary {
+    background: #3498db;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+.btn-info {
+    background: #1abc9c;
+}
+
+.btn-info:hover {
+    background: #16a085;
+    transform: translateY(-2px);
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+/* Gráfico Responsivo */
+.chart-container {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 300px;
+    }
+    table {
+        font-size: 0.8rem;
+    }
+}
+
+/* Tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table thead {
+    background-color: #000000;
+    color: #fff;
+}
+
+table th, table td {
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .card {
+        padding: 15px;
+    }
+}
+</style>
+
+<div class="container">
+    <h2 class="text-center">Análise do Posto <span style="color: #3498db;">{{ posto.nome }}</span></h2>
+    <div class="card">
+        <!-- Dados do Posto -->
+        <h3>Dados do Posto</h3>
+        <p><strong>Nome:</strong> {{ posto.nome }}</p>
+        <p><strong>Endereço:</strong> {{ posto.endereco }}</p>
+        <p><strong>Cidade:</strong> {{ posto.cidade }}</p>
+        <p><strong>Estado:</strong> {{ posto.estado }}</p>
+    </div>
+
+    <div class="card">
+        <!-- Filtro de Data -->
+        <h3>Filtro de Data</h3>
+        <form method="get" class="form-inline d-flex flex-wrap gap-2">
+            <input type="date" id="data_inicio" name="data_inicio" class="form-control" placeholder="Data Início" value="{{ data_inicio }}">
+            <input type="date" id="data_fim" name="data_fim" class="form-control" placeholder="Data Fim" value="{{ data_fim }}">
+            <button type="submit" class="btn btn-primary">🔎 Filtrar</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <!-- Gráfico -->
+        <h3>Vouchers Utilizados</h3>
+        <p><strong>Total de Vouchers Utilizados:</strong> {{ total_vouchers_usados }}</p>
+        <p><strong>Valor Total Utilizado:</strong> R$ {{ valor_total_utilizado }}</p>
+        <div class="chart-container">
+            <canvas id="postoChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <!-- Histórico de Vouchers -->
+        <h3>Histórico de Utilização</h3>
+        <table id="historico-vouchers">
+            <thead>
+                <tr>
+                    <th>Motorista</th>
+                    <th>Valor Utilizado</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for gasto in gastos %}
+                <tr>
+                    <td>{{ gasto.voucher.motorista.nome }}</td>
+                    <td>R$ {{ gasto.valor_gasto }}</td>
+                    <td>{{ gasto.data|date:"d/m/Y H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{% url 'listar_vouchers_posto' posto.id %}" class="btn btn-info">Ver Vouchers</a>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('postoChart').getContext('2d');
+    const dataVouchers = {{ data_vouchers|safe }};
+    const valoresGastos = {{ valores_gastos|safe }};
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dataVouchers,
+            datasets: [{
+                label: 'Valor Gasto',
+                data: valoresGastos,
+                backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                borderColor: 'rgba(41, 128, 185, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: 'Data' } },
+                y: { beginAtZero: true, title: { display: true, text: 'Valor Gasto (R$)' } }
+            }
+        }
+    });
+});
+</script>
+
+<!-- DataTables JS e CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#historico-vouchers').DataTable({
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.13.5/i18n/Portuguese-Brasil.json"
+            }
+        });
+    });
+</script>
+{% endblock %}

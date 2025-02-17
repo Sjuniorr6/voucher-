@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastrar Motorista{% endblock %}
+
+{% block content %}
+<style> 
+    body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+}
+
+</style>
+<div class="d-flex flex-column align-items-center justify-content-center mt-5">
+    <div class="card shadow-lg p-4 animated fadeIn" style="max-width: 100%; width: 100%; max-width: 600px; border-radius: 15px;">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-4">Cadastrar Motorista</h3>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_nome" class="form-label">Nome</label>
+                    {{ form.nome }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_cpf" class="form-label">CPF</label>
+                    {{ form.cpf }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_placa_veiculo" class="form-label">Placa do Veículo</label>
+                    {{ form.placa_veiculo }}
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

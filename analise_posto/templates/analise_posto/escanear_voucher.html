@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Escanear Voucher{% endblock %}
+
+{% block content %}
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 100%;
+    width: 100%;
+    max-width: 500px;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #f0f2f5, #e2e6ea);
+}
+
+#preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none;
+}
+
+.scan-theme {
+    text-align: center;
+    font-size: 1rem;
+    color: #495057;
+    margin-bottom: 20px;
+}
+
+#message-area {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    max-width: 90%;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+#message-area .alert {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.btn-scan {
+    font-size: 1.1rem;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-scan:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 90%;
+    }
+    .video-container {
+        height: 250px;
+    }
+}
+</style>
+
+<div class="d-flex flex-column align-items-center justify-content-center mt-5">
+    <div class="card p-4 shadow-lg animated fadeIn">
+        <h3 class="text-center mb-4">Escanear Voucher</h3>
+        <div class="video-container">
+            <video id="preview"></video>
+        </div>
+        <div class="scan-theme">Posicione o QR Code dentro da área de visualização para escanear.</div>
+        <button id="scan-button" class="btn-scan">Iniciar Escaneamento</button>
+    </div>
+</div>
+<div id="message-area"></div>
+
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const videoElement = document.getElementById('preview');
+    const messageArea = document.getElementById('message-area');
+    const scanButton = document.getElementById('scan-button');
+    let scanner;
+
+    // Função para exibir mensagens ao usuário na parte superior
+    function displayMessage(type, message) {
+        messageArea.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        setTimeout(() => {
+            messageArea.innerHTML = ''; // Remove a mensagem após 3 segundos
+        }, 3000);
+    }
+
+    // Inicializar o scanner
+    function initializeScanner() {
+        scanner = new Instascan.Scanner({ video: videoElement });
+
+        scanner.addListener('scan', (content) => {
+            validateVoucher(content);
+        });
+
+        Instascan.Camera.getCameras().then((cameras) => {
+            if (cameras.length === 0) {
+                displayMessage('danger', 'Nenhuma câmera foi encontrada. Por favor, verifique as permissões do navegador.');
+                return;
+            }
+
+            // Seleciona a câmera traseira, se disponível
+            const rearCamera = cameras.find((camera) => camera.name.toLowerCase().includes('back'));
+            scanner.start(rearCamera || cameras[0]);
+        }).catch((error) => {
+            console.error('Erro ao acessar a câmera:', error);
+            displayMessage('danger', 'Erro ao acessar a câmera. Por favor, verifique as permissões.');
+        });
+    }
+
+    // Validação do QR Code
+    function validateVoucher(content) {
+        fetch(`/analise_posto/validar_qrcode/${content}/`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Erro ao validar o QR Code.');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if (data.status === 'success') {
+                    displayMessage('success', data.message);
+                    setTimeout(() => {
+                        window.location.href = "{% url 'listar_vouchers_posto' voucher.rota.postos.first.id %}";
+                    }, 2000);
+                } else {
+                    displayMessage('danger', data.message);
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                displayMessage('danger', 'Ocorreu um erro ao validar o QR Code. Tente novamente.');
+            });
+    }
+
+    // Evento de clique no botão para iniciar o scanner
+    scanButton.addEventListener('click', () => {
+        if (!scanner) {
+            initializeScanner();
+        } else {
+            displayMessage('info', 'O scanner já está ativo.');
+        }
+    });
+
+    // Inicializa o scanner automaticamente ao carregar a página
+    initializeScanner();
+});
+</script>
+{% endblock %}

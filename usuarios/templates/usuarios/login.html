@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<style>
+/* Estilos para a página de login */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+}
+
+.card {
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 30px;
+    width: 100%;
+    max-width: 350px;
+    margin: 50px auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeIn 1s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+h3 {
+    font-weight: 700;
+    color: #E2A918;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.input-group-text {
+    background-color: #E9ECEF;
+    border-right: 0;
+    color: #495057;
+}
+
+.input-group .form-control {
+    border-left: 0;
+    box-shadow: none;
+}
+
+.form-control:focus {
+    border-color: #E2A918;
+    box-shadow: 0 0 5px rgba(226, 169, 24, 0.5);
+}
+
+.btn-primary {
+    background-color: #E2A918;
+    border-color: #E2A918;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn-primary:hover {
+    background-color: #d89c17;
+    border-color: #d89c17;
+    transform: translateY(-2px);
+}
+
+.text-center img {
+    width: 100px;
+    margin-bottom: 15px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card">
+        <div class="text-center mb-4">
+            <img src="{% static 'images/logo.png' %}" alt="Logo">
+            <h3>Login Funcionário</h3>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input type="text" name="{{ form.username.name }}" class="form-control" placeholder="Usuário" required id="id_username">
+            </div>
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" name="{{ form.password.name }}" class="form-control" placeholder="Senha" required id="id_password">
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Adiciona ícones do FontAwesome -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

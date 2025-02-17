@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home Gerente{% endblock %}
+
+{% block content %}
+<style>
+/* Estilos Gerais */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.card {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+h3, h4 {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table {
+    margin-top: 20px;
+}
+
+thead {
+    background-color: #3498db;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+th, td {
+    text-align: center;
+    padding: 12px;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.btn {
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-info {
+    background: #1abc9c;
+    color: #fff;
+}
+
+
+.btn-secondary {
+    background: #3498db;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+}
+</style>
+
+<div class="container">
+    <div class="card animated fadeIn">
+        <h3 class="card-title">Bem-vindo, {{ request.user.username }}</h3>
+        <p>Gerencie seus postos e acompanhe as análises detalhadas.</p>
+    </div>
+
+    <div class="card animated fadeIn">
+        <h4>Seus Postos</h4>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Endereço</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for posto in postos %}
+                    <tr>
+                        <td>{{ posto.nome }}</td>
+                        <td>{{ posto.endereco }}</td>
+                        <td>
+                            <a href="{% url 'analise_posto' posto.id %}" class="btn btn-info btn-sm">Analisar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">Nenhum posto cadastrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

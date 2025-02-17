@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Home</h2>
+    {% if section == 'gerente' %}
+        <div class="alert alert-info">Bem-vindo, Gerente!</div>
+        <a href="{% url 'alterar_senha' %}" class="btn btn-secondary">Alterar Senha</a>
+    {% elif section == 'pa' %}
+        <div class="alert alert-info">Bem-vindo, PA!</div>
+        <a href="{% url 'alterar_senha' %}" class="btn btn-secondary">Alterar Senha</a>
+    {% elif section == 'administrador' %}
+        <div class="alert alert-info">Bem-vindo, Administrador!</div>
+        <a href="{% url 'alterar_senha' %}" class="btn btn-secondary">Alterar Senha</a>
+    {% else %}
+        <div class="alert alert-info">Bem-vindo, Usuário!</div>
+        <a href="{% url 'alterar_senha' %}" class="btn btn-secondary">Alterar Senha</a>
+    {% endif %}
+</div>
+{% endblock %}

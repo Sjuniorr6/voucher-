@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Senha Alterada com Sucesso{% endblock %}
+
+{% block content %}
+<style>
+/* Estilos para mensagem de sucesso */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+}
+
+h2 {
+    font-weight: 700;
+    color: #27ae60; /* Verde de sucesso */
+    margin-bottom: 20px;
+}
+
+p {
+    color: #6c757d;
+    margin-bottom: 30px;
+    font-size: 1rem;
+}
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+</style>
+
+<div class="container">
+    <h2 class="text-success">Senha Alterada com Sucesso</h2>
+    <p>Sua senha foi atualizada com sucesso. Use sua nova senha para acessar o sistema.</p>
+    <a href="{% url 'home' %}" class="btn">Voltar para a Home</a>
+</div>
+{% endblock %}
