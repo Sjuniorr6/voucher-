@@ -84,12 +84,12 @@ WSGI_APPLICATION = 'ps_voucher.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'rrtBHXaiqJjaifySbWWbnezrFxMnSbFM',
-        'HOST': 'junction.proxy.rlwy.net',
-        'PORT': '50215',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'paradasegura',  # Nome do banco no RDS
+        'USER': 'postgres',  # Usuário do PostgreSQL no RDS
+        'PASSWORD': '44523913',  # Senha do banco no RDS
+        'HOST': 'database-1.c1gmwecgk3dv.us-east-2.rds.amazonaws.com',  # Endpoint do RDS
+        'PORT': '5432',  # Porta padrão do PostgreSQL
     }
 }
 
